@@ -4,14 +4,14 @@ local tick = require 'tick'
 
 local Player = { x = love.graphics.getWidth() / 2, y = love.graphics.getHeight() / 2, scaleX = 1, scaleY = 1, width = 25, height = 25 }
 
-local fps = 0
+local fps, coin = 0, 0
 
 function love.load()
     love.window.setMode(1080, 720, { resizable = true, vsync = 0, minwidth = 1080, minheight = 720 })
     tick.framerate = 60          -- Limit framerate to 60 frames per second.
     tick.rate = .016666566666666 -- 1/60 seconds per tick.
 
-    PlayerImage = love.graphics.newImage("res/cake.png")
+    PlayerImage = love.graphics.newImage("res/img/cake.png")
     love.graphics.setBackgroundColor(1, 255, 1)
 
     local imgW, imgH = PlayerImage:getWidth(), PlayerImage:getHeight()
@@ -24,6 +24,8 @@ function love.draw()
     love.graphics.draw(PlayerImage, Player.x, Player.y, 0, Player.scaleX, Player.scaleY, Player.width, Player.height)
     love.graphics.setColor(0, 0, 0)
     love.graphics.print(math.floor(fps), love.graphics.getWidth() - 20, 0)
+    love.graphics.setColor(155, 155, 0)
+    love.graphics.print(coin, 20, 0)
 end
 
 function love.update(dt)
