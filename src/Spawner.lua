@@ -20,16 +20,16 @@ function Spawner:update(dt, player)
 
 
         if Spawner:checkAABBCollision(mob, player) then
-            player:take_damage(1)
+            player:take_damage(1, dt)
         end
     end
 end
 
 function Spawner:checkAABBCollision(a, b)
-    return a.x < b.x + b.width and
-        a.x + a.width > b.x and
-        a.y < b.y + b.height and
-        a.y + a.height > b.y
+    return a.x - a.width / 2 < b.x + b.width / 2 and
+        a.x + a.width / 2 > b.x - b.width / 2 and
+        a.y - a.height / 2 < b.y + b.height / 2 and
+        a.y + a.height / 2 > b.y - b.height / 2
 end
 
 function Spawner:spawn_mob(mob_class, x, y)

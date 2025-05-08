@@ -9,8 +9,8 @@ function Zombie:new()
     self.y = nil
     self.speed = 2
     self.sprite = love.graphics.newImage("res/sprites/cake.png")
-    self.width = self.sprite:getWidth() * 1.5  
-    self.height = self.sprite:getHeight() * 1.5  
+    self.width = self.sprite:getWidth() * 1.5
+    self.height = self.sprite:getHeight() * 1.5
     return self
 end
 
@@ -22,7 +22,7 @@ function Zombie:update(dt)
     -- self:move(dt)
 end
 
-function Zombie:move(dt)    
+function Zombie:move(dt)
     local dx, dy = 0, 0
 
     if dx ~= 0 or dy ~= 0 then
