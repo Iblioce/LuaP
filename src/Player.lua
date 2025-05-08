@@ -1,4 +1,3 @@
--- Player.lua
 anim8 = require("libs/anim8")
 love.graphics.setDefaultFilter("nearest", "nearest")
 
@@ -24,23 +23,24 @@ end
 function Player:update(dt)
     if love.keyboard.isDown("z") then self.y = self.y - self.speed end
     if love.keyboard.isDown("s") then self.y = self.y + self.speed end
-    if love.keyboard.isDown("q") then self.x = self.x - self.speed 
-    self.animation.left:update(dt)
-    self.direction = "left"
+    if love.keyboard.isDown("q") then
+        self.x = self.x - self.speed
+        self.animation.left:update(dt)
+        self.direction = "left"
     end
-    if love.keyboard.isDown("d") then self.x = self.x + self.speed 
-    self.animation.right:update(dt)
-    self.direction = "right"
+    if love.keyboard.isDown("d") then
+        self.x = self.x + self.speed
+        self.animation.right:update(dt)
+        self.direction = "right"
     end
 end
 
 function Player:draw()
     if self.direction == "left" then
-        self.animation.left:draw(self.spriteSheet, self.x, self.y, nil, 10)
-    else --self.direction == "right" then
-        self.animation.right:draw(self.spriteSheet, self.x, self.y, nil, 10)
+        self.animation.left:draw(self.spriteSheet, self.x, self.y, nil, 5, nil, 8, 8)
+    else
+        self.animation.right:draw(self.spriteSheet, self.x, self.y, nil, 5, nil, 8, 8)
     end
-    
 end
 
 return Player
