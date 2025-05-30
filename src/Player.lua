@@ -13,14 +13,16 @@ function Player:new()
     self.x = 0
     self.y = 0
     self.speed = 5
-    self.weapons = {}
+    self.weapons = {
+        require("weapons.orb"):new(self)
+    }
 
     self.spriteSheet = love.graphics.newImage("res/sprites/playerMoving.png")
     self.grid = anim8.newGrid(16, 16, self.spriteSheet:getWidth(), self.spriteSheet:getHeight())
     self.animation = {}
-    self.animation.idle = anim8.newAnimation(self.grid("1-8", 1), 0.2)
-    self.animation.right = anim8.newAnimation(self.grid("1-8", 2), 0.2)
-    self.animation.left = anim8.newAnimation(self.grid("1-8", 3), 0.2)
+    self.animation.idle = anim8.newAnimation(self.grid("1-8", 1), 0.1)
+    self.animation.right = anim8.newAnimation(self.grid("1-8", 2), 0.1)
+    self.animation.left = anim8.newAnimation(self.grid("1-8", 3), 0.1)
 
     self.width = 16 * 5
     self.height = 16 * 5
@@ -35,6 +37,9 @@ function Player:update(dt)
             self.invincible = false
             self.invincible_timer = 0
         end
+    end
+    for _, weapon in ipairs(self.weapons) do
+        weapon:update(dt)
     end
 end
 
@@ -52,14 +57,12 @@ function Player:draw()
     love.graphics.setColor(255, 255, 255)
     love.graphics.print("Health: " .. self.health, self.x - love.graphics.getWidth() / 2,
         self.y - love.graphics.getHeight() / 2)
-
-    -- DEBUG: rectangle rouge autour du joueur
-    love.graphics.setColor(1, 0, 0)
-    love.graphics.rectangle("line", self.x - self.width / 2, self.y - self.height / 2, self.width, self.height)
-    love.graphics.setColor(1, 1, 1)
+    for _, weapon in ipairs(self.weapons) do
+        weapon:draw()
+    end
 end
 
-function Player:take_damage(amount)
+function Player:takeDamage(amount)
     if (self.invincible) then
         return
     end

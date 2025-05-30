@@ -20,8 +20,11 @@ function Spawner:update(dt, player)
 
 
         if Spawner:checkAABBCollision(mob, player) then
-            player:take_damage(1, dt)
+            player:takeDamage(1, dt)
         end
+        --if Spawner:checkAABBCollision(mob,player.Weapon)
+        --   mob:take_damage(1, dt)
+        --end
     end
 end
 

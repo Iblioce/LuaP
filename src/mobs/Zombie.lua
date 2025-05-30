@@ -7,6 +7,7 @@ function Zombie:new()
     local self = setmetatable({}, Zombie)
     self.x = nil
     self.y = nil
+    self.health = 1
     self.speed = 2
     self.sprite = love.graphics.newImage("res/sprites/cake.png")
     self.width = self.sprite:getWidth() * 1.5
