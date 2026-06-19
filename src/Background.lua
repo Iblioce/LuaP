@@ -6,7 +6,7 @@ function Background:new()
     local self = setmetatable({}, Background)
     self.x = 0
     self.y = 0
-    self.tileset = love.graphics.newImage("res/maps/tiles.png")
+    self.tileset = love.graphics.newImage("src/res/maps/tiles.png")
     self.tileWidth = 64
     self.tileHeight = 64
 

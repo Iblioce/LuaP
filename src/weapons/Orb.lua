@@ -5,7 +5,7 @@ Orb.__index = Orb
 function Orb:new(player)
     local self = setmetatable(Weapon:new(player), Orb)
     self.projectiles = {}
-    self.sprite = love.graphics.newImage("res/sprites/cake.png")
+    self.sprite = love.graphics.newImage("src/res/sprites/cake.png")
     self.scale = 1.5
     return self
 end
