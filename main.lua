@@ -1,5 +1,8 @@
 _G.love = require("love")
 
+-- Ajout de src/ dans le chemin de recherche des modules
+love.filesystem.setRequirePath(love.filesystem.getRequirePath() .. ";src/?.lua;src/?/init.lua")
+
 local PlayerClass = require("Player")
 local player
 local BackgroundClass = require("Background")

@@ -13,11 +13,14 @@ function Player:new()
     self.x = 0
     self.y = 0
     self.speed = 5
+    self.exp = 0
+    self.level = 1
+    self.exp_to_next_level = 10
     self.weapons = {
         require("weapons.orb"):new(self)
     }
 
-    self.spriteSheet = love.graphics.newImage("res/sprites/playerMoving.png")
+    self.spriteSheet = love.graphics.newImage("src/res/sprites/playerMoving.png")
     self.grid = anim8.newGrid(16, 16, self.spriteSheet:getWidth(), self.spriteSheet:getHeight())
     self.animation = {}
     self.animation.idle = anim8.newAnimation(self.grid("1-8", 1), 0.1)
@@ -45,7 +48,7 @@ end
 
 function Player:draw()
     if self.invincible then
-        love.graphics.setColor(255, 0, 0)
+        love.graphics.setColor(1, 0, 0)
     end
     if self.direction == "left" then
         self.animation.left:draw(self.spriteSheet, self.x, self.y, nil, 5, nil, 8, 8)
@@ -54,13 +57,29 @@ function Player:draw()
     else
         self.animation.idle:draw(self.spriteSheet, self.x, self.y, nil, 5, nil, 8, 8)
     end
-    love.graphics.setColor(255, 255, 255)
-    love.graphics.print("Health: " .. self.health, self.x - love.graphics.getWidth() / 2,
-        self.y - love.graphics.getHeight() / 2)
+    love.graphics.setColor(1, 1, 1)
+    local hud_x = self.x - love.graphics.getWidth() / 2
+    local hud_y = self.y - love.graphics.getHeight() / 2
+    love.graphics.print("Health: " .. self.health, hud_x, hud_y)
+    love.graphics.print("Level: " .. self.level .. "  EXP: " .. self.exp .. " / " .. self.exp_to_next_level, hud_x, hud_y + 18)
     for _, weapon in ipairs(self.weapons) do
         weapon:draw()
     end
 end
+
+function Player:gainLevel(amount)
+    self.level = self.level + amount
+    self.exp_to_next_level = math.floor(self.exp_to_next_level * 1.1)
+end
+
+function Player:gainExp(amount)
+    self.exp = self.exp + amount
+    while self.exp >= self.exp_to_next_level do
+        self.exp = self.exp - self.exp_to_next_level
+        self:gainLevel(1)
+    end
+end
+
 
 function Player:takeDamage(amount)
     if (self.invincible) then
