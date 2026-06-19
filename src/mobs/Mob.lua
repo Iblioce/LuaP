@@ -11,6 +11,7 @@ function Mob:new()
     self.sprite = nil
     self.width = nil
     self.height = nil
+    self.exp_drop = nil
 
     return self
 end
