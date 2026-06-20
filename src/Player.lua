@@ -15,7 +15,10 @@ function Player:new()
     self.speed = 5
     self.exp = 0
     self.level = 1
+    self.pending_level_ups = 0
     self.exp_to_next_level = 10
+    self.max_health = 3
+    self.upgrades = {}
     self.weapons = {
         require("weapons.orb"):new(self)
     }
@@ -58,25 +61,23 @@ function Player:draw()
         self.animation.idle:draw(self.spriteSheet, self.x, self.y, nil, 5, nil, 8, 8)
     end
     love.graphics.setColor(1, 1, 1)
-    local hud_x = self.x - love.graphics.getWidth() / 2
-    local hud_y = self.y - love.graphics.getHeight() / 2
-    love.graphics.print("Health: " .. self.health, hud_x, hud_y)
-    love.graphics.print("Level: " .. self.level .. "  EXP: " .. self.exp .. " / " .. self.exp_to_next_level, hud_x, hud_y + 18)
     for _, weapon in ipairs(self.weapons) do
         weapon:draw()
     end
 end
 
-function Player:gainLevel(amount)
-    self.level = self.level + amount
-    self.exp_to_next_level = math.floor(self.exp_to_next_level * 1.1)
+function Player:drawHUD()
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.print("Health: " .. self.health .. " / " .. self.max_health, 20, 20)
+    love.graphics.print("Level: " .. self.level .. "  EXP: " .. self.exp .. " / " .. self.exp_to_next_level, 20, 40)
 end
 
 function Player:gainExp(amount)
     self.exp = self.exp + amount
     while self.exp >= self.exp_to_next_level do
         self.exp = self.exp - self.exp_to_next_level
-        self:gainLevel(1)
+        self.pending_level_ups = self.pending_level_ups + 1
+        self.exp_to_next_level = math.floor(self.exp_to_next_level * 1.05)
     end
 end
 

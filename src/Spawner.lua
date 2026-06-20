@@ -28,8 +28,20 @@ function Spawner:update(dt, player)
         local dx = player.x - orb.x
         local dy = player.y - orb.y
         local dist = math.sqrt(dx * dx + dy * dy)
+        
+        -- Effet d'aimant
+        local magnetRadius = 150
+        if dist < magnetRadius and dist > 0 then
+            local speed = 250 * (1 - dist / magnetRadius)
+            orb.x = orb.x + (dx / dist) * speed * dt
+            orb.y = orb.y + (dy / dist) * speed * dt
+        end
+
         if dist < orb.collectRadius then
             player:gainExp(orb.value)
+            if _G.bopSound then
+                _G.bopSound:clone():play()
+            end
             table.remove(self.exp_orbs, i)
         end
     end
@@ -39,24 +51,45 @@ function Spawner:update(dt, player)
         local mob = self.spawners[i]
         mob:update(dt, player)
 
-        -- Collision mob -> joueur
+       
         if self:checkAABBCollision(mob, player) then
             player:takeDamage(1)
         end
 
-        -- Collision projectiles -> mob
+        
         for _, weapon in ipairs(player.weapons) do
             for j = #weapon.projectiles, 1, -1 do
                 local p = weapon.projectiles[j]
-                local proj = { x = p.x, y = p.y, width = 16, height = 16 }
+                local proj = { x = p.x, y = p.y, width = 16 * (weapon.scale or 1), height = 16 * (weapon.scale or 1) }
                 if self:checkAABBCollision(mob, proj) then
                     mob.health = mob.health - 1
+                    
+                    if weapon.name == "Orb" and weapon.split_unlocked and not p.has_split then
+                        local speed = math.sqrt(p.vx * p.vx + p.vy * p.vy)
+                        local angle = math.atan2(p.vy, p.vx)
+                        
+                        table.insert(weapon.projectiles, {
+                            x = p.x, y = p.y,
+                            vx = math.cos(angle + math.pi/4) * speed,
+                            vy = math.sin(angle + math.pi/4) * speed,
+                            lifetime = p.lifetime,
+                            has_split = true
+                        })
+                        table.insert(weapon.projectiles, {
+                            x = p.x, y = p.y,
+                            vx = math.cos(angle - math.pi/4) * speed,
+                            vy = math.sin(angle - math.pi/4) * speed,
+                            lifetime = p.lifetime,
+                            has_split = true
+                        })
+                    end
+
                     table.remove(weapon.projectiles, j)
                 end
             end
         end
 
-        -- Mort du mob : drop d'EXP + suppression
+        
         if mob.health <= 0 then
             local orb = ExpOrb:new(mob.x, mob.y, mob.exp_drop or 1)
             table.insert(self.exp_orbs, orb)

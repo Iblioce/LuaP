@@ -34,8 +34,9 @@ end
 function Background:getTileIndex(x, y)
     local key = x .. ":" .. y
     if not self.tileMap[key] then
-        math.randomseed(x * 10000 + y)
-        self.tileMap[key] = math.random(1, #self.tiles)
+        -- Utilisation d'un hash pseudo-aléatoire rapide au lieu de math.randomseed
+        local hash = bit.bxor((x * 73856093), (y * 19349663))
+        self.tileMap[key] = (math.abs(hash) % #self.tiles) + 1
     end
     return self.tileMap[key]
 end

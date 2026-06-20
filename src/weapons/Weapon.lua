@@ -1,9 +1,11 @@
 local Weapon = {}
 Weapon.__index = Weapon
 
-function Weapon:new(player)
+function Weapon:new(player, name)
     local self = setmetatable({}, Weapon)
     self.player = player
+    self.name = name or "Unknown"
+    self.level = 1
     self.cooldown = 1
     self.cooldown_timer = 0
     return self

@@ -3,10 +3,11 @@ local Orb = setmetatable({}, { __index = Weapon })
 Orb.__index = Orb
 
 function Orb:new(player)
-    local self = setmetatable(Weapon:new(player), Orb)
+    local self = setmetatable(Weapon:new(player, "Orb"), Orb)
     self.projectiles = {}
-    self.sprite = love.graphics.newImage("src/res/sprites/cake.png")
+    self.sprite = love.graphics.newImage("src/res/sprites/orbEye.png")
     self.scale = 1.5
+    self.split_unlocked = false
     return self
 end
 
@@ -20,8 +21,9 @@ function Orb:update(dt)
         local p = self.projectiles[i]
         p.x = p.x + p.vx * dt
         p.y = p.y + p.vy * dt
+        p.lifetime = p.lifetime + dt
         local maxDistance = 1000
-        if math.abs(p.x - self.player.x) > maxDistance or math.abs(p.y - self.player.y) > maxDistance then
+        if p.lifetime >= 10 or math.abs(p.x - self.player.x) > maxDistance or math.abs(p.y - self.player.y) > maxDistance then
             table.remove(self.projectiles, i)
         end
     end
@@ -29,7 +31,7 @@ end
 
 function Orb:draw()
     for _, p in ipairs(self.projectiles) do
-        love.graphics.draw(self.sprite, p.x, p.y, 0, self.scale, self.scale,
+        love.graphics.draw(self.sprite, p.x, p.y, 0, self.scale/2, self.scale/2,
             self.sprite:getWidth() / 2, self.sprite:getHeight() / 2)
     end
 end
@@ -54,7 +56,8 @@ function Orb:fire()
         x = self.player.x,
         y = self.player.y,
         vx = vx,
-        vy = vy
+        vy = vy,
+        lifetime = 0
     })
 end
 
